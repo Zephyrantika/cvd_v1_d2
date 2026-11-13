@@ -1,0 +1,32 @@
+# Real-data pipeline configuration.
+# Includes the frozen schema configs (graph/experiment) and only overrides raw
+# paths whose file names differ from configs/data.yaml defaults.
+#
+# Expected layout under data/raw/ (project root):
+#   hpo/hp.obo                          [PLACED]  HPO release (2026-09-01)
+#   hpo/phenotype.hpoa                  [MISSING - download from HPO release assets]
+#   hpo/genes_to_disease.txt            [MISSING - download from HPO release assets]
+#   mondo/mondo.obo                     [PLACED]  from mondo repo src/ontology/mondo-edit.obo
+#   string/9606.protein.links.full.v12.0.txt       [PLACED]
+#   string/9606.protein.aliases.v12.0.txt.gz       [MISSING - STRING aliases]
+#   reactome/*.v97.txt                  [MISSING - Reactome v97 or newer]
+#   biogrid/BIOGRID-ALL-2026-08-03.tab3.zip        [PLACED after zip conversion]
+#   gwas_catalog/...                    [MISSING - GWAS Catalog full associations]
+#   gtex/...                            [MISSING - GTEx v10 median TPM gct]
+#   go/go-basic-*.obo, go/goa_human-*.gaf.gz       [MISSING]
+#
+# NOTE: current data is version 2026-09-01 (not the frozen 2026-07-06/Reactome v97),
+# so results will differ from docs/v0_acceptance.md numbers. That is expected.
+includes:
+  - data.yaml
+  - graph.yaml
+  - experiment.yaml
+
+project_root: ".."
+
+mondo:
+  ontology_file: "data/raw/mondo/mondo.obo"
+
+string:
+  links_file: "data/raw/string/9606.protein.links.full.v12.0.txt"
+  aliases_file: "data/raw/string/9606.protein.aliases.v12.0.txt.gz"

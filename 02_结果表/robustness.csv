@@ -1,0 +1,5 @@
+﻿kind,level,jaccard_median,q25,frac_ge_0_6
+edge,delete_10pct,0.745,0.666,0.916
+edge,delete_20pct,0.693,0.612,0.821
+edge,delete_5pct,0.843,0.748,0.958
+seed,seed_variation,0.947,0.829,0.984

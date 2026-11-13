@@ -1,0 +1,4 @@
+﻿tier,modules,gwas_frac_median,gwas_frac_strict_median,gwas_z_median,expr_mean_median,expr_vs_random_median
+T1,65,0.95,0.9333,1.3582,0.6456,0.1347
+T2,121,0.9355,0.9167,1.1676,0.6798,0.1807
+T3,2653,0.9487,0.9286,1.4854,0.6569,0.1568

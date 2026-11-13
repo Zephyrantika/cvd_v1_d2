@@ -1,0 +1,39 @@
+includes:
+  - data.yaml
+  - graph.yaml
+  - experiment.yaml
+
+project_root: ".."
+
+paths:
+  raw: "smoke/raw"
+  interim: "smoke/interim"
+  processed: "smoke/processed"
+  folds: "smoke/folds"
+  graphs: "smoke/graphs"
+  outputs: "smoke/outputs"
+
+hpo:
+  ontology_file: "smoke/raw/hpo/hp.obo"
+  annotation_file: "smoke/raw/hpo/phenotype.hpoa"
+  gene_disease_file: "smoke/raw/hpo/genes_to_disease.txt"
+  gene_phenotype_file: "smoke/raw/hpo/genes_to_phenotype.txt"
+
+mondo:
+  ontology_file: "smoke/raw/mondo/mondo-2026-07-06.obo"
+
+string:
+  links_file: "smoke/raw/string/9606.protein.links.full.v12.0.txt.gz"
+  aliases_file: "smoke/raw/string/9606.protein.aliases.v12.0.txt.gz"
+
+reactome:
+  gene_pathway_file: "smoke/raw/reactome/NCBI2Reactome_All_Levels.v97.txt"
+  pathway_hierarchy_file: "smoke/raw/reactome/ReactomePathwaysRelation.v97.txt"
+  pathway_metadata_file: "smoke/raw/reactome/ReactomePathways.v97.txt"
+
+external_validation:
+  biogrid_file: "smoke/raw/biogrid/BIOGRID-ALL-2026-08-03.tab3.zip"
+  gwas_catalog_file: "smoke/raw/gwas_catalog/gwas-catalog-associations-full-2026-08-03.zip"
+  gtex_file: "smoke/raw/gtex/GTEx_Analysis_v10_RNASeQCv2.4.2_gene_median_tpm.gct.gz"
+  go_ontology_file: "smoke/raw/go/go-basic-2026-06-26.obo"
+  goa_human_file: "smoke/raw/go/goa_human-2026-05-28.gaf.gz"

@@ -1,0 +1,17 @@
+# 分层阈值与报告口径。改这里等于换口径，必须记录版本并重跑 M0 及下游。
+version: 1
+updated: 2026-10-28
+
+tiers:
+  t1_min_positives: 5     # T1 充足
+  t2_min_positives: 3     # T2 稀疏（3-4）
+  t4_max_hpo: 3           # T4 表型不足，与 T1-T3 交叉
+
+reporting:
+  primary_pool: [T2, T3]  # 主结论只用这两层
+  t1_separate: true       # T1 单独成表，不参与主检验
+  require_tier_column: true
+
+recovery:
+  enabled: true
+  allowed_tiers: [T1, T2] # 基因恢复类指标只在这两层算

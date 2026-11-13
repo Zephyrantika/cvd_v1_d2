@@ -1,0 +1,6 @@
+﻿variant,modules,size_median,z_median,density_median,hub_median,stability_median,steps_median
+full,120,19.0,1.279,0.606,0.171,0.895,10.0
+no_hub_penalty,120,17.5,1.273,0.688,0.185,0.901,10.0
+no_phenotype,120,17.5,1.006,0.658,0.174,0.909,10.0
+no_stability,120,18.5,1.312,0.635,0.175,0.885,10.0
+no_tightness,120,26.5,1.681,0.32,0.133,0.888,10.0
