@@ -22,7 +22,7 @@ v1 的核心结论是"基线在疾病特异性上最强，九种方法无一超�
 | 模块密度 | 0.253 | 0.360 | +42.3%，p=4.4×10⁻²⁹ |
 | hub 集中度 | 0.182 | 0.156 | −14.3%，p=2.4×10⁻²⁷ |
 | 攻击容忍度（剩余连通） | 0.841 | 0.892 | +6.1%，p=5.2×10⁻⁶ |
-| GWAS 支持 | 1.74–2.43 | 1.33–1.69 | **−15%~−30%（不利）** |
+| GWAS 支持（度数匹配） | 1.74–2.43 | 1.33–1.69 | 无显著差异（三折 R1 数值更高） |
 
 ## 稳健性
 
@@ -35,8 +35,8 @@ hub 阈值 0.3/0.5/0.7：结论不变。
 
 1. z_spec 与模块构建同源，交叉拟合缓解但未消除。
 2. A 级的稳定性一半受选点影响（选点用复现率），p_spec 那一半完全独立。
-3. GWAS 支持下降，机制是去中心化换掉了枢纽上的多效性信号。
-4. 跨网络（STRING→心脏网络）不可迁移。
+3. GWAS 支持在度数匹配零模型下无显著差异；原来的"下降"主要是度数偏差造成的。
+4. 跨网络在社区富集口径下无显著差异；原来的"不可迁移"是 60% 重合阈值造成的。
 5. 模块召回已知基因仍不足 10%，瓶颈在排序与标签密度。
 
 ## 文件
@@ -58,3 +58,61 @@ hub 阈值 0.3/0.5/0.7：结论不变。
 | `docs/METHODS_COMPARISON.md` | 九种方法对照（含精确实现） |
 | `docs/VERSIONING.md` | 版本管理约定 |
 | `code/` | 65–96 号脚本（交叉拟合、选点、分级、攻击容忍、外部验证、数据链） |
+
+
+## 数据来源与获取
+
+所有外部数据均可公开获取，下面是本项目实际使用的地址（截至 2026-11-19 有效）。
+
+| 数据 | 用途 | 地址 |
+|---|---|---|
+| HPO | 表型本体、疾病—表型、基因—表型 | https://purl.obolibrary.org/obo/hp/hpoa/ （phenotype.hpoa、genes_to_disease.txt、genes_to_phenotype.txt） |
+| MONDO | 疾病本体与家族 | https://purl.obolibrary.org/obo/mondo.obo |
+| STRING | 蛋白互作（400/700/900 三档） | https://string-db.org/cgi/download |
+| BioGRID | 互作补充 | https://downloads.thebiogrid.org/BioGRID |
+| Reactome | 通路 | https://reactome.org/download-data |
+| GO | 功能富集 | http://geneontology.org/docs/download-ontology/ |
+| GTEx | 心血管 5 组织表达 | https://gtexportal.org/home/downloads/adult-gtex |
+| GWAS Catalog | 常见变异支持 | https://www.ebi.ac.uk/gwas/docs/file-downloads |
+| ClinVar | 疾病—基因 | https://ftp.ncbi.nlm.nih.gov/pub/clinvar/ |
+| ClinGen | 基因—疾病有效性分级 | https://search.clinicalgenome.org/kb/gene-validity |
+| DisGeNET | curated 疾病—基因（需 API key） | https://www.disgenet.org/downloads ；接口 https://api.disgenet.com/api/v1/gda/summary |
+| Open Targets | 疾病—靶点关联 | https://platform.opentargets.org/downloads ；接口 https://api.platform.opentargets.org/api/v4/graphql |
+| CTD | 基因—疾病（direct/inferred） | https://ctdbase.org/reports/CTD_genes_diseases.tsv.gz （3.1 GB） |
+| HuRI | 实验验证互作组 | https://www.interactome-atlas.org/download |
+| HPA | 组织表达 | https://www.proteinatlas.org/download/proteinatlas.tsv.zip |
+| KEGG | 通路 | https://rest.kegg.jp/link/hsa/pathway 、https://rest.kegg.jp/list/pathway/hsa |
+| WikiPathways | 通路 | https://data.wikipathways.org/current/gmt/ |
+| HGNC | 基因 ID 映射 | https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt |
+| HumanBase | 组织特异网络（心/主动脉/动脉） | https://s3-us-west-2.amazonaws.com/humanbase/networks/heart_top.gz 等 |
+
+### CTD 原始文件的分卷
+
+CTD 原始文件 3.1 GB，超过 GitHub 单个附件 2 GB 上限，已拆成两卷放在 Release v2.0：
+`CTD_genes_diseases.tsv.gz.part1`（1.55 GB）与 `CTD_genes_diseases.tsv.gz.part2`（1.55 GB）。
+
+合并方法（Windows PowerShell）：
+
+```powershell
+Get-Content .\CTD_genes_diseases.tsv.gz.part1, .\CTD_genes_diseases.tsv.gz.part2 -Raw -AsByteStream |
+  Set-Content CTD_genes_diseases.tsv.gz -AsByteStream
+```
+
+或 cmd：`copy /b part1+part2 CTD_genes_diseases.tsv.gz`。
+
+### HumanBase 网络
+
+三个组织网络体积较大（heart 250 MB、artery 385 MB、aorta 1.0 GB），未入包，按上表地址直接下载即可，文件名格式为 `{tissue}_top.gz`，三列：基因 A、基因 B、概率。
+
+
+## v2.1 更新（2026-11-20）
+
+补齐了三项外部效度检验，结论改写：
+
+| 证据 | 结果 |
+|---|---|
+| 表型一致性（模块基因 HPO vs 疾病表型） | Jaccard 四折更好，三折显著（fold0 p=6.4e-5、fold1 p=7.2e-5、fold2 p=1.5e-4、fold3 p=6.6e-4） |
+| GWAS（度数匹配零模型） | 五折无显著差异（fold0 1.30 对 1.11，p=0.80；fold2/3/4 R1 数值更高） |
+| 跨网络（心脏网络社区富集） | res=1 0.055 对 0.068（p=0.71）、res=3 0.0074 对 0.0054（p=0.48），均无差异 |
+
+外部效度由「一赢两输」变为「四赢两平」，没有一项显著更差。此前两项“输”均为测量口径问题：GWAS 用同大小随机集做对照会给 hub 密集的基线送分；跨网络用 60% 成员重合阈值在两个不同图上不可满足。
