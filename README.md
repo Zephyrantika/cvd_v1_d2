@@ -1,5 +1,7 @@
 # 方向二递交包 v2（2026-11-19）
 
+数据获取方式见 `docs/DATA_SOURCES.md`（各数据库地址、体量、处理脚本）。
+
 ## 这一版比 v1 改了什么
 
 v1 的核心结论是"基线在疾病特异性上最强，九种方法无一超过；我们的贡献落在可靠性评价框架与复现率上"。v2 推翻了其中一半，原因是查出一个测量口径错误，并在此基础上把方法做实。
@@ -86,19 +88,13 @@ hub 阈值 0.3/0.5/0.7：结论不变。
 | HGNC | 基因 ID 映射 | https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt |
 | HumanBase | 组织特异网络（心/主动脉/动脉） | https://s3-us-west-2.amazonaws.com/humanbase/networks/heart_top.gz 等 |
 
-### CTD 原始文件的分卷
+### CTD 与 HumanBase 的获取说明
 
-CTD 原始文件 3.1 GB，超过 GitHub 单个附件 2 GB 上限，已拆成两卷放在 Release v2.0：
-`CTD_genes_diseases.tsv.gz.part1`（1.55 GB）与 `CTD_genes_diseases.tsv.gz.part2`（1.55 GB）。
+CTD 原始文件 3.1 GB（`CTD_genes_diseases.tsv.gz`），超过 GitHub 单个附件 2 GB 上限，**未随包上传**，请从下面地址直接下载：
 
-合并方法（Windows PowerShell）：
+https://ctdbase.org/reports/CTD_genes_diseases.tsv.gz
 
-```powershell
-Get-Content .\CTD_genes_diseases.tsv.gz.part1, .\CTD_genes_diseases.tsv.gz.part2 -Raw -AsByteStream |
-  Set-Content CTD_genes_diseases.tsv.gz -AsByteStream
-```
-
-或 cmd：`copy /b part1+part2 CTD_genes_diseases.tsv.gz`。
+下载后用 `scripts/71_ctd_align.py` 解析：只保留 `DirectEvidence == "marker/mechanism"` 的行，疾病经 MeSH→MONDO 映射、基因经 HGNC→Entrez 映射，产出 `ctd_gene_disease.parquet`。该解析结果（209 条 direct、98,625 条 inferred）已在 Release 的 `direction2_v2_external_tables_2026-11-19.zip` 中，可直接使用，不必重下 3.1 GB。
 
 ### HumanBase 网络
 
