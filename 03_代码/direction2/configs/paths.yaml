@@ -1,4 +1,0 @@
-# 路径配置。优先级：命令行 --v0-root > 环境变量 MODULES_V0_ROOT > 本文件 > 自动探测。
-# 项目根就是本文件所在的上一级目录（phenotype-modules-v0/）。
-v0_root: null          # null 表示自动探测：先找 ../v0，再找 ../../SENIOR_MODEL_STRUCTURE/phenotype-network-v0
-outputs_root: outputs
