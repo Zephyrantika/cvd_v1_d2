@@ -41,13 +41,16 @@ def main() -> int:
     parser.add_argument("--steps", type=int, default=10)
     parser.add_argument("--runs", type=int, default=RUNS)
     parser.add_argument("--size", type=int, default=SIZE)
+    parser.add_argument("--topk", type=int, default=200)
+    parser.add_argument("--ppi", default="700")
     args = parser.parse_args()
 
     paths = resolve_paths(args.v0_root)
     rng = np.random.default_rng(2026)
     log = JsonlLogger(paths.out("qc") / "lam_refine.log", "60_lam_refine")
     started = time.time()
-    out_dir = paths.out("lam_refine", f"fold_{args.fold}_lam{args.lam}_mu{args.mu}_size{args.size}")
+    suffix = ("" if args.topk == 200 else f"_top{args.topk}") + ("" if args.ppi == "700" else f"_ppi{args.ppi}")
+    out_dir = paths.out("lam_refine", f"fold_{args.fold}_lam{args.lam}_mu{args.mu}_size{args.size}{suffix}")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     sys.path.insert(0, str(paths.v0_root / "src"))
@@ -57,7 +60,7 @@ def main() -> int:
     matrix = load_saved_scores(paths.out("scores", f"fold_{args.fold}", "score_matrix.npz"))
     percentiles = matrix.percentiles()
     position = {g: i for i, g in enumerate(matrix.gene_ids)}
-    ppi = pd.read_parquet(paths.v0("data/processed/string_gene_edges_700.parquet"),
+    ppi = pd.read_parquet(paths.v0(f"data/processed/string_gene_edges_{args.ppi}.parquet"),
                           columns=["gene_a", "gene_b", "weight"])
     adjacency = build_adjacency(ppi)
 
@@ -128,7 +131,7 @@ def main() -> int:
         b_id, c_id = base_largest.get(disease), largest.get(disease)
         if not b_id or not c_id:
             continue
-        candidate = set(matrix.top_k(disease, 200))
+        candidate = set(matrix.top_k(disease, args.topk))
         base_genes = sorted(base_sets.get(b_id, set()), key=lambda g: -percentiles[matrix.disease_index(disease), position[g]])[:args.size]
         cons_genes = sorted(cons_sets.get(c_id, set()), key=lambda g: -percentiles[matrix.disease_index(disease), position[g]])[:args.size]
         if len(base_genes) < 5 or len(cons_genes) < 5:
